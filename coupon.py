@@ -34,6 +34,7 @@ class Bot:
         response = requests.get(self.URL)
         data = response.json()["data"]
         self.coupons = [Coupon(item) for item in data if item["Status"]=="verified"]
+        print("Bot running")
     def notify(self,coupons):
         for coupon in coupons:
             dataObj={
