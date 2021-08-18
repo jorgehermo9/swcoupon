@@ -33,7 +33,7 @@ class Bot:
         self.chatURL = "https://api.telegram.org/bot"+os.environ["BOT_TOKEN"]+"/sendMessage"
         response = requests.get(self.URL)
         data = response.json()["data"]
-        self.coupons = [Coupon(item) for item in data[1:] if item["Status"]=="verified"]
+        self.coupons = [Coupon(item) for item in data if item["Status"]=="verified"]
     def notify(self,coupons):
         for coupon in coupons:
             dataObj={
