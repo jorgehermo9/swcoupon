@@ -1,5 +1,6 @@
 import requests
 import time
+import datetime
 import os
 from dotenv import load_dotenv
 
@@ -22,8 +23,9 @@ class Coupon:
         message+= "Coupon: "+self.label+"\n\n"
         message+="http://withhive.me/313/"+self.label+"\n\n"
         message+="Resources:\n"
-        for resource in self.resources:
+        for resource in self.resources[:-1]:
             message+=resource.__repr__() + "\n"
+        message+=self.resources[-1].__repr__()
         return message
 
 
@@ -34,7 +36,7 @@ class Bot:
         response = requests.get(self.URL)
         data = response.json()["data"]
         self.coupons = [Coupon(item) for item in data if item["Status"]=="verified"]
-        print("Bot running")
+        print(logTime()+" Bot running")
     def notify(self,coupons):
         for coupon in coupons:
             dataObj={
@@ -42,7 +44,10 @@ class Bot:
                 "text": coupon.__repr__()
             }
             requests.post(self.chatURL,data=dataObj)
+            print(logTime()+" Coupon found!")
+            print("-------------------------------")
             print(coupon)
+            print("-------------------------------\n")
 
     def run(self):
         while True:
@@ -56,7 +61,8 @@ class Bot:
             self.coupons=coupons
             time.sleep(900)
 
+def logTime():
+    return "["+datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")+"]"
 
 if __name__ == "__main__":
-    os.environ["BOT_TOKEN"]
     Bot().run()
