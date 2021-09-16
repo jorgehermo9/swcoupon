@@ -1,3 +1,4 @@
+
 import requests
 import time
 import datetime
@@ -35,7 +36,7 @@ class Bot:
         self.chatURL = "https://api.telegram.org/bot"+os.environ["BOT_TOKEN"]+"/sendMessage"
         response = requests.get(self.URL)
         data = response.json()["data"]
-        self.coupons = [Coupon(item) for item in data if item["Status"]=="verified"]
+        self.coupons = [Coupon(item) for item in data if item["Status"]=="verified" and item["Score"]>100]
         print(logTime()+" Bot running")
     def notify(self,coupons):
         for coupon in coupons:
@@ -53,7 +54,7 @@ class Bot:
         while True:
             response = requests.get(self.URL)
             data = response.json()["data"]
-            coupons = [Coupon(item) for item in data if item["Status"]=="verified"]
+            coupons = [Coupon(item) for item in data if item["Status"]=="verified" and item["Score"]>100]
             oldLabels =[item.label for item in self.coupons]
             newCoupons =[item for item in coupons if item.label not in oldLabels]
             if(len(newCoupons)>0):
